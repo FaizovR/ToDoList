@@ -5,7 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.faizovr.todo.domain.model.Task
 
-class RepositoryImplementation(private val sharedPreferences: SharedPreferences)
+class RepositoryImpl(private val sharedPreferences: SharedPreferences,
+                     private val gson: Gson)
     : Repository {
 
     override fun getListFromSharedPreference(): List<Task> {
@@ -13,7 +14,7 @@ class RepositoryImplementation(private val sharedPreferences: SharedPreferences)
         if (jsonString?.isEmpty() == true)
             return mutableListOf()
         val type = object : TypeToken<List<Task>>() {}.type
-        return Gson().fromJson<MutableList<Task>>(jsonString, type)
+        return gson.fromJson<MutableList<Task>>(jsonString, type)
     }
 
     override fun getEditablePositionFromSharedPreference(): Int =
@@ -23,22 +24,26 @@ class RepositoryImplementation(private val sharedPreferences: SharedPreferences)
             sharedPreferences.getLong(PREFS_ID_KEY, 0)
 
     override fun saveListToSharedPreference(taskList: List<Task>) {
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        val jsonString: String = Gson().toJson(taskList)
-        editor.putString(PREFS_TASK_LIST_KEY, jsonString)
-        editor.apply()
+        val jsonString: String = gson.toJson(taskList)
+        sharedPreferences.edit().apply {
+            putString(PREFS_TASK_LIST_KEY, jsonString)
+            apply()
+        }
     }
 
     override fun saveEditablePositionToSharedPreference(editablePosition: Int) {
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putInt(PREFS_EDITABLE_POSITION_KEY, editablePosition)
-        editor.apply()
+        sharedPreferences.edit().apply {
+            putInt(PREFS_EDITABLE_POSITION_KEY, editablePosition)
+            apply()
+        }
     }
 
+
     override fun saveIdToSharedPreference(id: Long) {
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putLong(PREFS_ID_KEY, id)
-        editor.apply()
+        sharedPreferences.edit().apply {
+            putLong(PREFS_ID_KEY, id)
+            apply()
+        }
     }
 
     companion object {

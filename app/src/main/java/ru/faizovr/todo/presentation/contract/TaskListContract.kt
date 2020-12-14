@@ -1,6 +1,6 @@
 package ru.faizovr.todo.presentation.contract
 
-import ru.faizovr.todo.presentation.viewholder.TaskDataView
+import ru.faizovr.todo.presentation.model.TaskDataView
 
 interface TaskListContract {
 
@@ -20,7 +20,6 @@ interface TaskListContract {
 
     interface Presenter {
         fun onTaskClickedForPosition(position: Int)
-        fun init()
         fun onCheckBoxTaskClickedForPosition(position: Int)
         fun onEditTaskClickedForPosition(position: Int)
         fun listItemMoved(fromPosition: Int, toPosition: Int)

@@ -1,5 +1,8 @@
 package ru.faizovr.todo.presentation.presenter
 
+import android.content.res.Resources
+import android.util.Log
+import android.util.TypedValue
 import androidx.annotation.VisibleForTesting
 import ru.faizovr.todo.R
 import ru.faizovr.todo.domain.model.Model
@@ -8,11 +11,12 @@ import ru.faizovr.todo.domain.model.TaskState
 import ru.faizovr.todo.presentation.InputState
 import ru.faizovr.todo.presentation.contract.TaskListContract
 import ru.faizovr.todo.presentation.mapper.TaskMapper
-import ru.faizovr.todo.presentation.viewholder.TaskDataView
+import ru.faizovr.todo.presentation.model.TaskDataView
 
 class TaskListPresenter(
         private val view: TaskListContract.View,
         private val model: Model,
+        private val resources: Resources,
         private val taskMapper: TaskMapper = TaskMapper()
 ) : TaskListContract.Presenter {
 
@@ -35,7 +39,7 @@ class TaskListPresenter(
         this.inputState = inputState
     }
 
-    override fun init() {
+    init {
         view.setFuncToMainButton()
         setupInputState()
         showContent()
@@ -88,9 +92,13 @@ class TaskListPresenter(
         } else {
             editTextString.isNotEmpty()
         }
-        val alpha = if (isStringNotEmpty) R.dimen.alpha_default.toFloat() else R.dimen.alpha_default.toFloat()
+        val typedValue = TypedValue()
+        if (isStringNotEmpty)
+            resources.getValue(R.dimen.alpha_default, typedValue, true)
+        else
+            resources.getValue(R.dimen.alpha_half, typedValue, true)
         view.setMainButtonClickable(isStringNotEmpty)
-        view.setMainButtonAlpha(alpha)
+        view.setMainButtonAlpha(typedValue.float)
     }
 
     private fun changeButtonText() {
@@ -167,7 +175,7 @@ class TaskListPresenter(
     }
 
     private fun updateList() {
-        val taskList: List<TaskDataView> = model.getCopyList()
+        val taskList: List<TaskDataView> = model.getList()
                 .map(taskMapper::mapFromEntity)
         if (taskList.isNotEmpty()) {
             showList(taskList)

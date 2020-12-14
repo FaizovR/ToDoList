@@ -14,11 +14,13 @@ import ru.faizovr.todo.presentation.contract.TaskListContract
 import ru.faizovr.todo.presentation.presenter.TaskListPresenter
 import ru.faizovr.todo.presentation.textwatcher.MessageInputTextWatcher
 import ru.faizovr.todo.presentation.touchhelper.TaskTouchHelper
-import ru.faizovr.todo.presentation.viewholder.TaskDataView
+import ru.faizovr.todo.presentation.model.TaskDataView
 
 class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContract.View {
 
     private var taskListPresenter: TaskListContract.Presenter? = null
+    private lateinit var messageInputTextWatcher: MessageInputTextWatcher
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
     private val onEditButtonClicked: (position: Int) -> Unit = { position: Int ->
         taskListPresenter?.onEditTaskClickedForPosition(position)
@@ -45,9 +47,9 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
     }
 
     private fun setupPresenter() {
-        val app: ToDoApplication = activity?.application as ToDoApplication
-        taskListPresenter = TaskListPresenter(this, app.model)
-        taskListPresenter?.init()
+        val app: ToDoApplication = requireActivity().application as ToDoApplication?
+                ?: throw IllegalStateException("Fragment $this not attached to an app.")
+        taskListPresenter = TaskListPresenter(this, app.model, resources)
     }
 
     private fun setupViews() {
@@ -67,12 +69,26 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
                 ?.commit()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyHelpers()
+    }
+
+    private fun destroyHelpers() {
+        val taskListPresenter1 = taskListPresenter
+        if (taskListPresenter1 != null) {
+            edit_text_add.removeTextChangedListener(messageInputTextWatcher)
+            itemTouchHelper.attachToRecyclerView(null)
+        }
+    }
+
     private fun setupHelpers() {
-        if (taskListPresenter != null) {
-            val messageInputTextWatcher = MessageInputTextWatcher(taskListPresenter!!)
+        val taskListPresenter1 = taskListPresenter
+        if (taskListPresenter1 != null) {
+            messageInputTextWatcher = MessageInputTextWatcher(taskListPresenter1)
             edit_text_add.addTextChangedListener(messageInputTextWatcher)
-            val taskTouchHelper = TaskTouchHelper(taskListPresenter!!)
-            val itemTouchHelper = ItemTouchHelper(taskTouchHelper)
+            val taskTouchHelper = TaskTouchHelper(taskListPresenter1)
+            itemTouchHelper = ItemTouchHelper(taskTouchHelper)
             itemTouchHelper.attachToRecyclerView(lists_recycler_view)
         }
     }

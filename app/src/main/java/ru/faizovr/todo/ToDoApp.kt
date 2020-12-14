@@ -3,7 +3,8 @@ package ru.faizovr.todo
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import ru.faizovr.todo.data.RepositoryImplementation
+import com.google.gson.Gson
+import ru.faizovr.todo.data.RepositoryImpl
 import ru.faizovr.todo.domain.model.Model
 
 class ToDoApplication : Application() {
@@ -18,7 +19,7 @@ class ToDoApplication : Application() {
 
     private fun setupModel() {
         val sharedPreferences: SharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        val repository = RepositoryImplementation(sharedPreferences)
+        val repository = RepositoryImpl(sharedPreferences, Gson())
         model = Model(repository)
     }
 

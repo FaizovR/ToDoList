@@ -5,8 +5,8 @@ import ru.faizovr.todo.data.Repository
 class Model(private val repository: Repository) {
 
     private val taskList: MutableList<Task> = mutableListOf()
-    private var id: Long = 0
-    private var editablePosition: Int = -1
+    private var nextTaskId: Long = 0
+    private var editableTaskPosition: Int = -1
 
     init {
         loadDataFromSharedPreference()
@@ -16,21 +16,21 @@ class Model(private val repository: Repository) {
         val taskList = repository.getListFromSharedPreference() as MutableList<Task>
         this.taskList.clear()
         this.taskList.addAll(taskList)
-        id = repository.getIdFromSharedPreference()
-        editablePosition = repository.getEditablePositionFromSharedPreference()
+        nextTaskId = repository.getIdFromSharedPreference()
+        editableTaskPosition = repository.getEditablePositionFromSharedPreference()
     }
 
     fun saveDataToSharedPreference() {
         repository.saveListToSharedPreference(taskList)
-        repository.saveEditablePositionToSharedPreference(editablePosition)
-        repository.saveIdToSharedPreference(id)
+        repository.saveEditablePositionToSharedPreference(editableTaskPosition)
+        repository.saveIdToSharedPreference(nextTaskId)
     }
 
     fun getMyList(): List<Task> =
             taskList
 
     fun addTask(message: String) {
-        val newTask = Task(id++, message)
+        val newTask = Task(nextTaskId++, message)
         taskList.add(newTask)
     }
 
@@ -39,9 +39,9 @@ class Model(private val repository: Repository) {
 
     private fun swapEditableTask(fromPosition: Int, toPosition: Int) {
         if (taskList[fromPosition].taskState == TaskState.EDIT) {
-            editablePosition = toPosition
+            editableTaskPosition = toPosition
         } else if (taskList[toPosition].taskState == TaskState.EDIT) {
-            editablePosition = fromPosition
+            editableTaskPosition = fromPosition
         }
     }
 
@@ -55,7 +55,7 @@ class Model(private val repository: Repository) {
     }
 
     fun getEditableTaskPosition(): Int =
-            editablePosition
+            editableTaskPosition
 
     fun getEditableTaskMessage(): String =
             if (getEditableTaskPosition() in 0 until taskList.size)
@@ -66,7 +66,7 @@ class Model(private val repository: Repository) {
     fun setTaskState(position: Int, taskState: TaskState) {
         if (position in 0 until taskList.size) {
             taskList[position].taskState = taskState
-            editablePosition = if (taskState == TaskState.EDIT)
+            editableTaskPosition = if (taskState == TaskState.EDIT)
                 position
             else
                 -1
@@ -74,8 +74,8 @@ class Model(private val repository: Repository) {
     }
 
     fun deleteTask(position: Int) {
-        if (editablePosition == position)
-            editablePosition = -1
+        if (editableTaskPosition == position)
+            editableTaskPosition = -1
         if (position in 0 until taskList.size)
             taskList.removeAt(position)
     }
@@ -91,7 +91,7 @@ class Model(private val repository: Repository) {
             else
                 null
 
-    fun getCopyList(): List<Task> =
-            taskList.map(Task::copy)
+    fun getList(): List<Task> =
+            taskList
 }
 
