@@ -2,25 +2,26 @@ package ru.faizovr.todo.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_to_do_list.*
 import ru.faizovr.todo.R
 import ru.faizovr.todo.ToDoApplication
 import ru.faizovr.todo.presentation.activity.ToDoActivity
 import ru.faizovr.todo.presentation.adapter.ToDoTaskAdapter
 import ru.faizovr.todo.presentation.contract.TaskListContract
+import ru.faizovr.todo.presentation.model.TaskDataView
 import ru.faizovr.todo.presentation.presenter.TaskListPresenter
 import ru.faizovr.todo.presentation.textwatcher.MessageInputTextWatcher
 import ru.faizovr.todo.presentation.touchhelper.TaskTouchHelper
-import ru.faizovr.todo.presentation.model.TaskDataView
+
 
 class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContract.View {
 
     private var taskListPresenter: TaskListContract.Presenter? = null
-    private lateinit var messageInputTextWatcher: MessageInputTextWatcher
-    private lateinit var itemTouchHelper: ItemTouchHelper
 
     private val onEditButtonClicked: (position: Int) -> Unit = { position: Int ->
         taskListPresenter?.onEditTaskClickedForPosition(position)
@@ -35,7 +36,7 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as ToDoActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        (requireActivity() as ToDoActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         setupViews()
         setupPresenter()
         setupHelpers()
@@ -69,26 +70,13 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
                 ?.commit()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        destroyHelpers()
-    }
-
-    private fun destroyHelpers() {
-        val taskListPresenter1 = taskListPresenter
-        if (taskListPresenter1 != null) {
-            edit_text_add.removeTextChangedListener(messageInputTextWatcher)
-            itemTouchHelper.attachToRecyclerView(null)
-        }
-    }
-
     private fun setupHelpers() {
         val taskListPresenter1 = taskListPresenter
         if (taskListPresenter1 != null) {
-            messageInputTextWatcher = MessageInputTextWatcher(taskListPresenter1)
+            val messageInputTextWatcher = MessageInputTextWatcher(taskListPresenter1)
             edit_text_add.addTextChangedListener(messageInputTextWatcher)
             val taskTouchHelper = TaskTouchHelper(taskListPresenter1)
-            itemTouchHelper = ItemTouchHelper(taskTouchHelper)
+            val itemTouchHelper = ItemTouchHelper(taskTouchHelper)
             itemTouchHelper.attachToRecyclerView(lists_recycler_view)
         }
     }

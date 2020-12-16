@@ -1,7 +1,6 @@
 package ru.faizovr.todo.presentation.presenter
 
 import android.content.res.Resources
-import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.VisibleForTesting
 import ru.faizovr.todo.R
