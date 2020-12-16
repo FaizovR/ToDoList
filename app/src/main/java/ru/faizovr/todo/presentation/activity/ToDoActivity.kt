@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import ru.faizovr.todo.R
+import ru.faizovr.todo.presentation.fragments.TaskFragment
 import ru.faizovr.todo.presentation.fragments.TaskListFragment
 
 
@@ -16,7 +17,8 @@ class ToDoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            addFragment(TaskListFragment())
+            val fragment = TaskListFragment.newInstance()
+            addFragment(fragment)
         }
     }
 
@@ -35,6 +37,15 @@ class ToDoActivity : AppCompatActivity() {
                 .beginTransaction()
                 .add(R.id.main_fragment_container, fragment)
                 .commit()
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .addToBackStack(TaskFragment.FRAGMENT_TAG)
+                .commit()
+
     }
 }
 

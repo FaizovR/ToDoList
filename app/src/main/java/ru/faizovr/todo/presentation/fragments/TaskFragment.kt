@@ -1,12 +1,10 @@
 package ru.faizovr.todo.presentation.fragments
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_task.*
-import kotlinx.android.synthetic.main.task_view_holder.*
 import ru.faizovr.todo.R
 import ru.faizovr.todo.ToDoApplication
 import ru.faizovr.todo.presentation.contract.TaskContract
@@ -36,6 +34,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskContract.View {
     }
 
     companion object {
+
+        fun newInstance(taskId: Long): TaskFragment {
+            val args = Bundle()
+            args.putLong(TASK_ID_KEY, taskId)
+            val fragment = TaskFragment()
+            fragment.arguments = args
+            return fragment
+        }
+
         const val FRAGMENT_TAG = "TaskFragment"
         const val TASK_ID_KEY = "TASK_ID"
     }

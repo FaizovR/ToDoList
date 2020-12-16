@@ -2,11 +2,9 @@ package ru.faizovr.todo.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_to_do_list.*
 import ru.faizovr.todo.R
 import ru.faizovr.todo.ToDoApplication
@@ -58,16 +56,8 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
     }
 
     override fun showTaskFragment(id: Long) {
-        val bundle = Bundle()
-        bundle.putLong(TaskFragment.TASK_ID_KEY, id)
-        val fragment: Fragment = TaskFragment()
-        fragment.arguments = bundle
-
-        fragmentManager
-                ?.beginTransaction()
-                ?.replace(R.id.main_fragment_container, fragment)
-                ?.addToBackStack(TaskFragment.FRAGMENT_TAG)
-                ?.commit()
+        val fragment = TaskFragment.newInstance(id)
+        (requireActivity() as ToDoActivity).replaceFragment(fragment)
     }
 
     private fun setupHelpers() {
@@ -122,6 +112,16 @@ class TaskListFragment : Fragment(R.layout.fragment_to_do_list), TaskListContrac
     override fun updateList(taskList: List<TaskDataView>) {
         val adapter: ToDoTaskAdapter = lists_recycler_view.adapter as ToDoTaskAdapter
         adapter.updateList(taskList)
+    }
+
+    companion object {
+        fun newInstance(): TaskListFragment {
+            val args = Bundle()
+
+            val fragment = TaskListFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
 }
