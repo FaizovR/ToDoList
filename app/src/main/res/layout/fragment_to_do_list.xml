@@ -31,20 +31,19 @@
                     android:layout_marginTop="@dimen/spacing_normal_16"
                     android:hint="@string/hint_add_task"
                     android:inputType="textMultiLine"
-                    android:lines="5"
+                    android:maxLines="5"
                     android:scrollbars="vertical" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <Button
+                    android:id="@+id/button_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginHorizontal="@dimen/spacing_normal_16"
+                    android:clickable="false"
+                    android:text="@string/action_add_task" />
 
-            <Button
-                android:id="@+id/button_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginHorizontal="@dimen/spacing_normal_16"
-                android:layout_marginTop="160dp"
-                android:clickable="false"
-                android:text="@string/action_add_task" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
