@@ -1,5 +1,6 @@
 package ru.faizovr.todo.presentation.presenter
 
+import android.content.res.Resources
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
@@ -14,7 +15,8 @@ class PresenterTest {
     private val model: Model = mock()
     private val view: TaskListContract.View = mock()
     private val taskMapper: TaskMapper = mock()
-    private val taskListPresenter = TaskListPresenter(view, model, taskMapper)
+    private val resources: Resources = mock()
+    private val taskListPresenter = TaskListPresenter(view, model, resources, taskMapper)
 
     private fun setAddInputState() {
         taskListPresenter.setInputState(InputState.ADD)
