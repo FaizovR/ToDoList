@@ -15,10 +15,12 @@
             android:id="@+id/text_task_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/spacing_normal_16"
             android:elegantTextHeight="true"
             android:scrollbars="vertical"
             android:textAlignment="inherit"
-            android:textSize="@dimen/font_normal_16"
+            android:textSize="18sp"
+            android:textStyle="normal"
             tools:text="@string/text_holder_lorem_ipsum" />
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>
